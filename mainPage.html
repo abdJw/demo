@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharjah Police - Self-Service Kiosk</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .container {
+        background: white;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* ======== LANDING PAGE ======== */
+    .landing-page {
+        background: url('images/main_Img.jpg') no-repeat center center/cover;
+        height: 100vh;
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: #fff;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .landing-page::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at center,
+            rgba(0, 0, 0, 0.35) 0%,
+            rgba(0, 0, 0, 0.65) 60%,
+            rgba(0, 0, 0, 0.85) 100%
+        );
+        z-index: 1;
+    }
+
+    .landing-content {
+        position: relative;
+        z-index: 2;
+        padding: 40px;
+        max-width: 900px;
+        text-align: center;
+        animation: fadeIn 1.5s ease-out;
+    }
+
+    .logo-container {
+        margin-bottom: 40px;
+        animation: zoomIn 1.5s ease-out;
+    }
+
+    .logo-container img {
+        width: 450px;
+        max-width: 90%;
+        height: auto;
+        filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.7));
+    }
+
+    .landing-description {
+        font-size: 2.4em;
+        margin-bottom: 50px;
+        line-height: 1.6;
+        color: #fff;
+        font-weight: 500;
+        text-shadow:
+            0 0 10px rgba(0, 0, 0, 0.9),
+            0 0 20px rgba(0, 0, 0, 0.8),
+            0 0 30px rgba(255, 255, 255, 0.4);
+        letter-spacing: 1px;
+    }
+
+    .start-button {
+        background: linear-gradient(135deg, #c4a574 0%, #8b6f4e 100%);
+        color: white;
+        padding: 25px 90px;
+        border: none;
+        border-radius: 60px;
+        font-size: 1.8em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    }
+
+    .start-button:hover {
+        transform: scale(1.05) translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes zoomIn {
+        from { transform: scale(0.8); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* ======== SERVICE PAGES ======== */
+    #servicePages {
+        background: linear-gradient(135deg, #f8f4ef 0%, #e8dfd5 100%);
+        height: 100vh;
+        overflow-y: auto;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #8b6f4e 0%, #c4a574 100%);
+        color: white;
+        padding: 25px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .header-logo {
+        width: 70px;
+        height: auto;
+    }
+
+    .header-text h1 {
+        font-size: 2em;
+        font-weight: 300;
+    }
+
+    .header-text p {
+        font-size: 1em;
+        opacity: 0.9;
+    }
+
+    .header-right {
+        font-size: 3em;
+    }
+
+    .content {
+        padding: 50px 60px;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .page {
+        display: none;
+    }
+
+    .page.active {
+        display: block;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .page-title h2 {
+        font-size: 3em;
+        color: #8b6f4e;
+        margin-bottom: 15px;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+
+    .page-title .subtitle {
+        font-size: 1.5em;
+        color: #666;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 35px;
+        margin-top: 30px;
+         
+    }
+
+    .service-card {
+        background: white;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(139, 111, 78, 0.15);
+        overflow: hidden;
+        position: relative;
+        border: 3px solid transparent;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background: linear-gradient(90deg, #8b6f4e 0%, #c4a574 100%);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .service-card:hover {
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 20px 60px rgba(139, 111, 78, 0.25);
+        border-color: #c4a574;
+    }
+
+    .service-card-content {
+        padding: 50px 40px;
+    }
+
+    .service-card .icon {
+        font-size: 5em;
+        margin-bottom: 25px;
+        filter: drop-shadow(0 5px 15px rgba(139, 111, 78, 0.2));
+        transition: transform 0.4s ease;
+    }
+
+    .service-card:hover .icon {
+        transform: scale(1.1) rotateY(360deg);
+    }
+
+    .service-card h3 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        font-weight: 500;
+        color: #333;
+        transition: color 0.3s ease;
+    }
+
+    .service-card:hover h3 {
+        color: #8b6f4e;
+    }
+
+    .service-card p {
+        font-size: 1.2em;
+        color: #777;
+        font-weight: 400;
+    }
+
+    .service-card .arrow {
+        margin-top: 20px;
+        font-size: 2em;
+        color: #c4a574;
+        opacity: 0;
+        transform: translateX(-20px);
+        transition: all 0.4s ease;
+    }
+
+    .service-card:hover .arrow {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* ======== FORM STYLING ======== */
+    .form-container {
+        background: white;
+        border-radius: 25px;
+        padding: 50px;
+        box-shadow: 0 10px 40px rgba(139, 111, 78, 0.15);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 12px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1.2em;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 18px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        font-size: 1.1em;
+        transition: all 0.3s ease;
+        background: #f9f9f9;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #8b6f4e;
+        background: white;
+        box-shadow: 0 5px 20px rgba(139, 111, 78, 0.1);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .btn {
+        background: linear-gradient(135deg, #8b6f4e 0%, #c4a574 100%);
+        color: white;
+        padding: 18px 50px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(139, 111, 78, 0.3);
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 35px rgba(139, 111, 78, 0.4);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    }
+
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, #5a6268 0%, #4e555b 100%);
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+
+    /* ======== SUCCESS MESSAGE ======== */
+    .success-message {
+        text-align: center;
+        padding: 80px 60px;
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 10px 40px rgba(139, 111, 78, 0.15);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .success-message .icon {
+        font-size: 6em;
+        margin-bottom: 30px;
+        animation: scaleIn 0.6s ease-out;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .success-message h2 {
+        color: #8b6f4e;
+        font-size: 2.8em;
+        margin-bottom: 20px;
+        font-weight: 300;
+    }
+
+    .success-message p {
+        font-size: 1.4em;
+        color: #666;
+        line-height: 1.8;
+        margin-bottom: 10px;
+    }
+
+    .breadcrumb {
+        background: white;
+        padding: 18px 35px;
+        border-radius: 50px;
+        margin-bottom: 40px;
+        font-size: 1.2em;
+        color: #666;
+        display: inline-block;
+        box-shadow: 0 5px 20px rgba(139, 111, 78, 0.1);
+        border: 2px solid #f0f0f0;
+    }
+
+    .required {
+        color: #d32f2f;
+    }
+
+    .decorative-line {
+        height: 3px;
+        width: 80px;
+        background: linear-gradient(90deg, #8b6f4e 0%, #c4a574 100%);
+        margin: 20px auto;
+        border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+        .landing-description {
+            font-size: 1.6em;
+        }
+        .start-button {
+            font-size: 1.4em;
+            padding: 20px 50px;
+        }
+        .services-grid {
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .page-title h2 {
+            font-size: 2em;
+        }
+        .form-container {
+            padding: 30px 20px;
+        }
+    }
+</style>
+
+
+</head>
+<body>
+    <div class="container">
+        <!-- Landing Page -->
+<div id="landingPage" class="landing-page active">
+    <div class="landing-content">
+        <div class="logo-container">
+            <img src="images\Logo Vertical Transparent BG.png" style="
+                width: 50rem;
+                background: white;
+                border-radius: 100px;
+            ">
+        </div>
+        <p class="landing-description">
+            مرحباً بكم في نظام الخدمة الذاتية<br>
+            Welcome to Self-Service Kiosk
+        </p>
+        <button class="start-button" onclick="goToServices()">
+            ابدأ | Start
+        </button>
+    </div>
+</div>
+
+        <!-- Service Pages Container -->
+        <div id="servicePages" style="display: none;">
+            <div class="header">
+                <div class="header-left">
+                 <img src="images\Logo Horizental Transparent BG.png" style="
+    width: 20rem;
+    background: white;
+    border-radius: 100px;
+">
+                </div>
+                <div class="header-right"></div>
+            </div>
+
+            <div class="content">
+                <!-- Page 1: Main Categories -->
+                <div id="page1" class="page active">
+                    <div class="page-title">
+                        <h2>اختر الخدمة</h2>
+                        <div class="decorative-line"></div>
+                        <p class="subtitle">Select Service Category</p>
+                    </div>
+                    <div class="services-grid">
+                        <div class="service-card" onclick="selectCategory('traffic')">
+                            <div class="service-card-content">
+                                <div class="icon">🚦</div>
+                                <h3>Traffic Services</h3>
+                                <p>خدمات المرور</p>
+                                <div class="arrow">→</div>
+                            </div>
+                        </div>
+                        <div class="service-card" onclick="selectCategory('reporting')">
+                            <div class="service-card-content">
+                                <div class="icon">📋</div>
+                                <h3>Police Reporting</h3>
+                                <p>البلاغات الشرطية</p>
+                                <div class="arrow">→</div>
+                            </div>
+                        </div>
+                        <div class="service-card" onclick="selectCategory('licenses')">
+                            <div class="service-card-content">
+                                <div class="icon">📄</div>
+                                <h3>Licenses & Permits</h3>
+                                <p>التراخيص والتصاريح</p>
+                                <div class="arrow">→</div>
+                            </div>
+                        </div>
+                        <div class="service-card" onclick="selectCategory('inquiries')">
+                            <div class="service-card-content">
+                                <div class="icon">💬</div>
+                                <h3>General Inquiries</h3>
+                                <p>الاستفسارات العامة</p>
+                                <div class="arrow">→</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page 2: Sub-Categories -->
+                <div id="page2" class="page">
+                    <div class="breadcrumb" id="breadcrumb"></div>
+                    <div class="page-title">
+                        <h2>اختر الخدمة المطلوبة</h2>
+                        <div class="decorative-line"></div>
+                        <p class="subtitle">Select Specific Service</p>
+                    </div>
+                    <div class="services-grid" id="subCategoriesGrid"></div>
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="goToPage('page1')">← Back | رجوع</button>
+                    </div>
+                </div>
+
+                <!-- Page 3: Personal Information Form -->
+                <div id="page3" class="page">
+                    <div class="breadcrumb" id="breadcrumb2"></div>
+                    <div class="page-title">
+                        <h2>المعلومات الشخصية</h2>
+                        <div class="decorative-line"></div>
+                        <p class="subtitle">Personal Information</p>
+                    </div>
+                    <div class="form-container">
+                        <form id="personalForm">
+                            <div class="form-group">
+                                <label>Nationality | الجنسية <span class="required">*</span></label>
+                                <select id="nationality" required onchange="toggleIdFields()">
+                                    <option value="">Select | اختر</option>
+                                    <option value="emirati">UAE National | إماراتي</option>
+                                    <option value="non-emirati">Non-Emirati | غير إماراتي</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="emiratiIdGroup" style="display: none;">
+                                <label>Emirates ID Number | رقم الهوية <span class="required">*</span></label>
+                                <input type="text" id="emiratesId" placeholder="784-XXXX-XXXXXXX-X">
+                            </div>
+
+                            <div class="form-group" id="passportGroup" style="display: none;">
+                                <label>Passport Number | رقم جواز السفر <span class="required">*</span></label>
+                                <input type="text" id="passportNumber" placeholder="Enter passport number">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Full Name | الاسم الكامل <span class="required">*</span></label>
+                                <input type="text" id="fullName" required placeholder="Enter your full name">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Mobile Number | رقم الهاتف <span class="required">*</span></label>
+                                <input type="tel" id="mobile" required placeholder="+971-XX-XXX-XXXX">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email Address | البريد الإلكتروني <span class="required">*</span></label>
+                                <input type="email" id="email" required placeholder="example@email.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Additional Details | تفاصيل إضافية</label>
+                                <textarea id="details" placeholder="Enter any additional information"></textarea>
+                            </div>
+
+                            <div class="button-group">
+                                <button type="button" class="btn btn-secondary" onclick="goToPage('page2')">← Back | رجوع</button>
+                                <button type="submit" class="btn">Submit | إرسال ✓</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Page 4: Success Message -->
+                <div id="page4" class="page">
+                    <div class="success-message">
+                        <div class="icon">✅</div>
+                        <h2>تم الإرسال بنجاح!</h2>
+                        <div class="decorative-line"></div>
+                        <h2>Submission Successful!</h2>
+                        <p>تم استلام طلبك بنجاح</p>
+                        <p>Your request has been received successfully</p>
+                        <p style="margin-top: 30px;">سيتم التواصل معك قريباً</p>
+                        <p>Our team will contact you shortly</p>
+                        <div class="button-group">
+                            <button class="btn" onclick="resetKiosk()">طلب جديد | New Request</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedCategory = '';
+        let selectedService = '';
+
+        const subCategories = {
+            traffic: [
+                { id: 'renew-license', icon: '🔄', title: 'Renew License', titleAr: 'تجديد الرخصة' },
+                { id: 'traffic-fine', icon: '💰', title: 'Pay Traffic Fine', titleAr: 'دفع مخالفة مرورية' },
+                { id: 'vehicle-registration', icon: '🚗', title: 'Vehicle Registration', titleAr: 'تسجيل المركبة' },
+                { id: 'license-inquiry', icon: '🔍', title: 'License Inquiry', titleAr: 'استعلام عن رخصة' }
+            ],
+            reporting: [
+                { id: 'lost-bag', icon: '🎒', title: 'Report Lost Bag', titleAr: 'الإبلاغ عن حقيبة مفقودة' },
+                { id: 'found-item', icon: '🔎', title: 'Report Found Item', titleAr: 'الإبلاغ عن غرض تم العثور عليه' },
+                { id: 'theft', icon: '🚨', title: 'Report Theft', titleAr: 'الإبلاغ عن سرقة' },
+                { id: 'accident', icon: '⚠️', title: 'Report Accident', titleAr: 'الإبلاغ عن حادث' }
+            ],
+            licenses: [
+                { id: 'business-license', icon: '🏢', title: 'Business License', titleAr: 'رخصة تجارية' },
+                { id: 'event-permit', icon: '🎉', title: 'Event Permit', titleAr: 'تصريح فعالية' },
+                { id: 'security-clearance', icon: '🔒', title: 'Security Clearance', titleAr: 'شهادة حسن سيرة' },
+                { id: 'residence-permit', icon: '🏠', title: 'Residence Permit', titleAr: 'تصريح إقامة' }
+            ],
+            inquiries: [
+                { id: 'case-inquiry', icon: '📁', title: 'Case Inquiry', titleAr: 'استعلام عن قضية' },
+                { id: 'general-info', icon: 'ℹ️', title: 'General Information', titleAr: 'معلومات عامة' },
+                { id: 'complaint', icon: '📝', title: 'File Complaint', titleAr: 'تقديم شكوى' },
+                { id: 'feedback', icon: '💭', title: 'Feedback', titleAr: 'ملاحظات' }
+            ]
+        };
+
+        function goToServices() {
+            document.getElementById('landingPage').style.display = 'none';
+            document.getElementById('servicePages').style.display = 'block';
+        }
+
+        function selectCategory(category) {
+            selectedCategory = category;
+            const categoryNames = {
+                traffic: 'Traffic Services | خدمات المرور',
+                reporting: 'Police Reporting | البلاغات الشرطية',
+                licenses: 'Licenses & Permits | التراخيص والتصاريح',
+                inquiries: 'General Inquiries | الاستفسارات العامة'
+            };
+
+            document.getElementById('breadcrumb').textContent = categoryNames[category];
+            
+            const grid = document.getElementById('subCategoriesGrid');
+            grid.innerHTML = '';
+            
+            subCategories[category].forEach(service => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.onclick = () => selectService(service.id, service.title);
+                card.innerHTML = `
+                    <div class="service-card-content">
+                        <div class="icon">${service.icon}</div>
+                        <h3>${service.title}</h3>
+                        <p>${service.titleAr}</p>
+                        <div class="arrow">→</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            goToPage('page2');
+        }
+
+        function selectService(serviceId, serviceTitle) {
+            selectedService = serviceId;
+            const categoryNames = {
+                traffic: 'Traffic Services',
+                reporting: 'Police Reporting',
+                licenses: 'Licenses & Permits',
+                inquiries: 'General Inquiries'
+            };
+            document.getElementById('breadcrumb2').textContent = 
+                `${categoryNames[selectedCategory]} > ${serviceTitle}`;
+            goToPage('page3');
+        }
+
+        function goToPage(pageId) {
+            document.querySelectorAll('#servicePages .page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function toggleIdFields() {
+            const nationality = document.getElementById('nationality').value;
+            const emiratiGroup = document.getElementById('emiratiIdGroup');
+            const passportGroup = document.getElementById('passportGroup');
+            const emiratiId = document.getElementById('emiratesId');
+            const passportNumber = document.getElementById('passportNumber');
+
+            if (nationality === 'emirati') {
+                emiratiGroup.style.display = 'block';
+                passportGroup.style.display = 'none';
+                emiratiId.required = true;
+                passportNumber.required = false;
+            } else if (nationality === 'non-emirati') {
+                emiratiGroup.style.display = 'none';
+                passportGroup.style.display = 'block';
+                emiratiId.required = false;
+                passportNumber.required = true;
+            } else {
+                emiratiGroup.style.display = 'none';
+                passportGroup.style.display = 'none';
+                emiratiId.required = false;
+                passportNumber.required = false;
+            }
+        }
+
+        document.getElementById('personalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                category: selectedCategory,
+                service: selectedService,
+                nationality: document.getElementById('nationality').value,
+                emiratesId: document.getElementById('emiratesId').value,
+                passportNumber: document.getElementById('passportNumber').value,
+                fullName: document.getElementById('fullName').value,
+                mobile: document.getElementById('mobile').value,
+                email: document.getElementById('email').value,
+                details: document.getElementById('details').value
+            };
+
+            console.log('Form submitted:', formData);
+            goToPage('page4');
+        });
+
+        function resetKiosk() {
+            document.getElementById('personalForm').reset();
+            selectedCategory = '';
+            selectedService = '';
+            document.getElementById('servicePages').style.display = 'none';
+            document.getElementById('landingPage').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
